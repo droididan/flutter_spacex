@@ -9,7 +9,27 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Service locator
+  get_it: ^2.0.1
+  # Bloc for state management
+  flutter_bloc: ^0.21.0
+  # Value equality
+  equatable: ^0.4.0
+  # Functional programming thingies
+  dartz: ^0.8.6
+  # Remote API
+  data_connection_checker: ^0.3.4
+
+  # Local cache
+  hive: ^1.0.0
+
+  graphql_flutter: ^2.1.0
+
   cupertino_icons: ^0.1.2
+
+  json_serializable: ^3.2.3
+  build_runner: ^1.7.1
+
 
 dev_dependencies:
   flutter_test:
