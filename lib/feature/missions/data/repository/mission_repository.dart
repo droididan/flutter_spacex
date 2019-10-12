@@ -14,11 +14,16 @@ class MissionRepositoryImpl extends MissionRepository {
 
   @override
   Future<Either<Failure, MissionResponse>> getMissions([int limit = 10]) async {
-    try {
-      final missions = await remoteDataSource.getMissions(limit);
-      return Right(missions);
-    } on Exception catch (_) {
-      return Left(ServerFailure());
+    if (await networkInfo.isConnected) {
+      try {
+        final missions = await remoteDataSource.getMissions(limit);
+        return Right(missions);
+      } on Exception catch (_) {
+        return Left(ServerFailure());
+      }
+    } else {
+      // todo implement cache
+     return Left(ServerFailure());
     }
   }
 }
