@@ -1,3 +1,3 @@
 import 'dart:io';
 
-String jsonReader(String fileName) => File('test/fixtures/$fileName').readAsStringSync();
+String jsonReader(String fileName) => File('test/json/$fileName').readAsStringSync();

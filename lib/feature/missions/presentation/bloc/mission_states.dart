@@ -1,13 +1,24 @@
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
+import 'package:spacex_app/feature/missions/data/model/mission_model.dart';
 
 @immutable
-abstract class MissionEvent extends Equatable {
-  MissionEvent([List props = const <dynamic>[]]) : super(props);
+abstract class MissionState extends Equatable {
+  MissionState([List props = const <dynamic>[]]) : super(props);
 }
 
-class GetMissionsEvent extends MissionEvent  {
-  final int limit;
+class Empty extends MissionState {}
 
-  GetMissionsEvent ([this.limit = 10]) : super([limit]);
+class Loading extends MissionState {}
+
+class Loaded extends MissionState {
+  final MissionResponse model;
+
+  Loaded({@required this.model}) : super([model]);
+}
+
+class Error extends MissionState {
+  final String message;
+
+  Error({@required this.message}) : super([message]);
 }

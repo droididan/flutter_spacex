@@ -26,7 +26,5 @@ main() {
       verify(mockDataConnectionChecker.hasConnection);
       expect(result, tHasConnectionFuture);
     });
-
-
   });
 }

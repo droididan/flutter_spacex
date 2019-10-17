@@ -19,15 +19,16 @@ class MissionRemoteDataSourceImpl extends MissionRemoteDataSource {
 
   @override
   Future<MissionResponse> getMissions(int limit) async {
-    final graph = await client.query(QueryOptions(
+    final options = QueryOptions(
       document: readMissions,
-
       errorPolicy: ErrorPolicy.all,
       fetchPolicy: FetchPolicy.cacheFirst,
-      variables: <String, dynamic>{
+      variables: {
         'nLimit': limit,
       },
-    ));
+    );
+
+    final graph = await client.query(options);
 
     final list = graph.data['launches'] as List<dynamic>;
     final launches = list.map((dynamic e) => MissionModel.fromJson(e)).toList();
