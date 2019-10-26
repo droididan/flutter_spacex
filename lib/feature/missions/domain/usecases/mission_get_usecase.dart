@@ -10,9 +10,8 @@ class GetMission implements UseCase<MissionResponse, Params> {
   GetMission(this.repository);
 
   @override
-  Future<Either<Failure, MissionResponse>> call(Params params) async {
-    return await repository.getMissions(params.limit);
-  }
+  Future<Either<Failure, MissionResponse>> call(Params params) async => await repository.getMissions(params.limit);
+
 }
 
 class Params {

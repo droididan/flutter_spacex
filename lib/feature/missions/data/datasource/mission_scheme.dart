@@ -5,6 +5,9 @@ query getMission($nLimit: Int!) {
     details
     mission_name
     launch_year
+    links {
+      flickr_images
+    }
   }
 }
 ''';

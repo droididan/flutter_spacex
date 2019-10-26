@@ -8,16 +8,12 @@ import 'package:spacex_app/feature/missions/presentation/bloc/mission_events.dar
 import 'package:spacex_app/feature/missions/presentation/bloc/mission_states.dart';
 
 class MissionBloc extends Bloc<MissionEvent, MissionState> {
-
   // use cases
   final GetMission getMission;
-//  final DeleteMission deleteMission;
 
   MissionBloc({@required this.getMission}) : assert(getMission != null) {
     dispatch(GetMissionsEvent());
   }
-
-
 
   @override
   MissionState get initialState => Empty();
@@ -29,18 +25,8 @@ class MissionBloc extends Bloc<MissionEvent, MissionState> {
       final failureOrMission = await getMission(Params(event.limit));
       yield failureOrMission.fold(
         (failure) => Error(message: _mapFailure(failure)),
-        (missions) => Loaded(model: missions),
+        (missions) => missions == null ? Empty() : Loaded(model: missions),
       );
-    }
-
-    if (event is DeleteMissionEvent) {
-
-
-//      final failureOrDeleted = await deleteMission(event.mission.id);
-//      failureOrDeleted.fold(
-//          (failire) => Error(),
-//          (missions) => Loaded(model: missions),
-//      );
     }
   }
 

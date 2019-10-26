@@ -30,9 +30,11 @@ class MissionRemoteDataSourceImpl extends MissionRemoteDataSource {
 
     final graph = await client.query(options);
 
-    final list = graph.data['launches'] as List<dynamic>;
-    final launches = list.map((dynamic e) => MissionModel.fromJson(e)).toList();
-
-    return graph.hasErrors ? throw ServerException() : MissionResponse(launches);
+    return graph.hasErrors
+        ? throw ServerException()
+        : MissionResponse(
+            (graph.data['launches'] as List<dynamic>)
+                .map((dynamic mission) => MissionModel.fromJson(mission))
+                .toList());
   }
 }

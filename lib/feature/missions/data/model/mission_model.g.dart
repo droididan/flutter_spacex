@@ -39,13 +39,14 @@ class MissionModelAdapter extends TypeAdapter<MissionModel> {
       fields[1] as String,
       fields[2] as String,
       fields[3] as String,
+      links: fields[4] as Links,
     );
   }
 
   @override
   void write(BinaryWriter writer, MissionModel obj) {
     writer
-      ..writeByte(4)
+      ..writeByte(5)
       ..writeByte(0)
       ..write(obj.details)
       ..writeByte(1)
@@ -53,7 +54,30 @@ class MissionModelAdapter extends TypeAdapter<MissionModel> {
       ..writeByte(2)
       ..write(obj.launchYear)
       ..writeByte(3)
-      ..write(obj.id);
+      ..write(obj.id)
+      ..writeByte(4)
+      ..write(obj.links);
+  }
+}
+
+class LinksAdapter extends TypeAdapter<Links> {
+  @override
+  Links read(BinaryReader reader) {
+    var numOfFields = reader.readByte();
+    var fields = <int, dynamic>{
+      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return Links(
+      (fields[0] as List)?.cast<String>(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, Links obj) {
+    writer
+      ..writeByte(1)
+      ..writeByte(0)
+      ..write(obj.flickrImages);
   }
 }
 
@@ -81,6 +105,9 @@ MissionModel _$MissionModelFromJson(Map<String, dynamic> json) {
     json['mission_name'] as String,
     json['launch_year'] as String,
     json['id'] as String,
+    links: json['links'] == null
+        ? null
+        : Links.fromJson(json['links'] as Map<String, dynamic>),
   );
 }
 
@@ -90,4 +117,15 @@ Map<String, dynamic> _$MissionModelToJson(MissionModel instance) =>
       'mission_name': instance.missionName,
       'launch_year': instance.launchYear,
       'id': instance.id,
+      'links': instance.links,
+    };
+
+Links _$LinksFromJson(Map<String, dynamic> json) {
+  return Links(
+    (json['flickr_images'] as List)?.map((e) => e as String)?.toList(),
+  );
+}
+
+Map<String, dynamic> _$LinksToJson(Links instance) => <String, dynamic>{
+      'flickr_images': instance.flickrImages,
     };
