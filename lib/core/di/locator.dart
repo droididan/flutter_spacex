@@ -22,8 +22,7 @@ initLocator() {
   // mission data
   sl.registerLazySingleton<MissionRemoteDataSource>(() => MissionRemoteDataSourceImpl(client: sl()));
   sl.registerLazySingleton<MissionLocalDataSource>(() => MissionLocalDataSourceImpl());
-  sl.registerLazySingleton<MissionRepository>(
-      () => MissionRepositoryImpl(networkInfo: sl(), localDataSource: sl(), remoteDataSource: sl()));
+  sl.registerLazySingleton<MissionRepository>(() => MissionRepositoryImpl(networkInfo: sl(), localDataSource: sl(), remoteDataSource: sl()));
   // mission domain
   sl.registerLazySingleton(() => GetMission(sl()));
   // mission presentation

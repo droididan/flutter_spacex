@@ -8,6 +8,8 @@ import 'package:spacex_app/core/di/locator.dart';
 import 'package:spacex_app/feature/missions/data/model/mission_model.dart';
 import 'package:spacex_app/feature/missions/presentation/bloc/mission_bloc.dart';
 import 'package:spacex_app/feature/missions/presentation/bloc/mission_states.dart';
+import 'package:spacex_app/feature/missions/presentation/page/detail_screen.dart';
+
 const IMAGE_SIZE = 80.0;
 var logger = Logger(printer: PrettyPrinter(), filter: null);
 
@@ -41,47 +43,61 @@ class MyApp extends StatelessWidget {
 class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final bloc = sl<MissionBloc>();
     return Scaffold(
+      appBar: AppBar(
+        title: Center(child: Text('SpaceX')),
+      ),
       body: BlocProvider(
-        builder: (_) => bloc,
+        create: (_) => sl<MissionBloc>(),
         child: BlocBuilder<MissionBloc, MissionState>(
           builder: (context, state) {
-            if (state is Loading) {
-              return Center(child: CircularProgressIndicator());
-            }
-
-            if (state is Empty) {
-              return Center(
-                child: Text('Empty State'),
-              );
-            }
-
-            if (state is Loaded) {
-              final list = state.model?.launches;
-              return ListView.builder(
-                itemCount: list.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final mission = list[index];
-                  return ListTile(
-                    contentPadding: EdgeInsets.all(3.0),
-                    title: Text(mission.missionName),
-                    leading: mission.links.flickrImages.isNotEmpty ? CachedNetworkImage(
-                      imageUrl: mission.links.flickrImages.first,
-                      width: IMAGE_SIZE,
-                      height: IMAGE_SIZE,
-                      fit: BoxFit.fill,
-                      placeholder: (context, url) => CircularProgressIndicator(strokeWidth: 3,),
-                      errorWidget: (context, url, error) => Icon(Icons.error),
-                    ) :  Container(height: IMAGE_SIZE, width: IMAGE_SIZE, color: Colors.grey.shade200,),
-                  );
-                },
-              );
-            }
-            return Container();
+            return state.when(
+              empty: (_) => Center(child: Text('Empty State')),
+              loading: (_) => Center(child: CircularProgressIndicator()),
+              loaded: (event) => buildMissionList(event),
+              error: (error) => Center(child: Text('Error')),
+            );
           },
         ),
       ),
+    );
+  }
+
+  ListView buildMissionList(Loaded state) {
+    final list = state.model?.launches;
+    return ListView.builder(
+      itemCount: list.length,
+      itemBuilder: (BuildContext context, int index) {
+        final mission = list[index];
+        return ListTile(
+          onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Detail(
+                model: mission,
+              ),
+            ),
+          ),
+          contentPadding: EdgeInsets.all(3.0),
+          title: Text(mission.missionName),
+          leading: mission.links.flickrImages.isNotEmpty
+              ? CachedNetworkImage(
+                  imageUrl: mission.links.flickrImages.first,
+                  width: IMAGE_SIZE,
+                  height: IMAGE_SIZE,
+                  fit: BoxFit.fill,
+                  placeholder: (context, url) => CircularProgressIndicator(
+                    strokeWidth: 3,
+                  ),
+                  errorWidget: (context, url, error) => Icon(Icons.error),
+                )
+              : Container(
+                  height: IMAGE_SIZE,
+                  width: IMAGE_SIZE,
+                  color: Colors.grey.shade200,
+                ),
+        );
+      },
     );
   }
 }

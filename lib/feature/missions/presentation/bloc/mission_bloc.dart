@@ -12,21 +12,33 @@ class MissionBloc extends Bloc<MissionEvent, MissionState> {
   final GetMission getMission;
 
   MissionBloc({@required this.getMission}) : assert(getMission != null) {
-    dispatch(GetMissionsEvent());
+    add(GetMissionsEvent(limit: 10));
   }
 
   @override
-  MissionState get initialState => Empty();
+  MissionState get initialState => MissionState.empty();
 
   @override
   Stream<MissionState> mapEventToState(MissionEvent event) async* {
-    if (event is GetMissionsEvent) {
-      yield Loading();
-      final failureOrMission = await getMission(Params(event.limit));
+    yield Loading();
+
+    yield* event.when(
+      getMissionsEvent: (e) {
+        return mapMissionEvent(e);
+      },
+    );
+  }
+
+  Stream<MissionState> mapMissionEvent(GetMissionsEvent e) async* {
+    try {
+
+      final failureOrMission = await getMission(Params(e.limit));
       yield failureOrMission.fold(
-        (failure) => Error(message: _mapFailure(failure)),
-        (missions) => missions == null ? Empty() : Loaded(model: missions),
+        (failure) => MissionState.error(message: _mapFailure(failure)),
+        (missions) => missions == null ? MissionState.empty() : MissionState.loaded(model: missions),
       );
+    } on Exception catch (e) {
+      print('error');
     }
   }
 

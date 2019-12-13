@@ -1,20 +1,32 @@
-import 'package:equatable/equatable.dart';
-import 'package:meta/meta.dart';
-import 'package:spacex_app/feature/missions/data/model/mission_model.dart';
-
-@immutable
-abstract class MissionEvent extends Equatable {
-  MissionEvent([List props = const <dynamic>[]]) : super(props);
+import 'package:super_enum/super_enum.dart';
+part 'mission_events.g.dart';
+@superEnum
+enum _MissionEvent {
+  @Data(fields: [
+    DataField('limit', int),
+  ])
+  GetMissionsEvent,
 }
 
-class GetMissionsEvent extends MissionEvent {
-  final int limit;
-
-  GetMissionsEvent([this.limit = 10]) : super([limit]);
-}
-
-class DeleteMissionEvent extends MissionEvent {
-  final MissionModel mission;
-
-  DeleteMissionEvent(this.mission) : super([mission]);
-}
+//
+//@immutable
+//abstract class MissionEvent extends Equatable { }
+//
+//class GetMissionsEvent extends MissionEvent {
+//  final int limit;
+//
+//  GetMissionsEvent([this.limit = 10]);
+//
+//  @override
+//  List<Object> get props => [limit];
+//}
+//
+//class DeleteMissionEvent extends MissionEvent {
+//  final MissionModel mission;
+//
+//  DeleteMissionEvent(this.mission);
+//
+//  @override
+//  List<Object> get props => [mission];
+//}
+//
